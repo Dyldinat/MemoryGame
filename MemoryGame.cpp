@@ -6,7 +6,9 @@
 #include <vector>
 #include <string>
 
+
 using namespace std;
+
 
 void Play(int players, int mode, int speedLevel, int sequenceLength, string selectedMode)
 {
@@ -314,6 +316,124 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 			}
 		}
 	}
+}
+
+void selectSpeed(int players, int mode, int sequenceLength, string selectedMode)
+{
+	void selectLevel(int players, int mode, string selectedMode);
+
+	char speedLevel;
+	char option;
+
+	system("cls");
+	cout << "Выберите временной уровень сложности: " << endl;
+	cout << "1. Лёгкий" << endl;
+	cout << "2. Средний" << endl;
+	cout << "3. Сложный" << endl;
+	cout << "0. Назад к выбору длины" << endl;
+
+	cin >> speedLevel;
+
+	system("cls");
+	cout << "Введите 0 для начала игры" << endl;
+	cin >> option;
+
+	switch (option)
+	{
+	case '0':
+		cout << "3" << endl;
+		Sleep(1000);
+		cout << "2" << endl;
+		Sleep(1000);
+		cout << "1" << endl;
+		Sleep(1000);
+		break;
+	}
+
+	cout << " --------------------- ИГРА НАЧАЛАСЬ --------------------- " << endl;
+	Sleep(500);
+
+
+	switch (speedLevel)
+	{
+	case '1':
+		cout << "Выбран уровень сложности: Лёгкий " << endl;
+		speedLevel = 3;
+		selectedMode += "Easy";
+		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		break;
+	case '2':
+		cout << "Выбран уровень сложности: Средний" << endl;
+		speedLevel = 2;
+		selectedMode += "Normal";
+		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		break;
+	case '3':
+		cout << "Выбран уровень сложности: Сложный" << endl;
+		speedLevel = 1;
+		selectedMode += "Hard";
+		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		break;
+	case '0':
+		selectLevel(players, mode, selectedMode);
+		break;
+	default:
+		selectSpeed(players, mode, sequenceLength, selectedMode);
+		break;
+	}
+}
+
+void selectLevel(int players, int mode, string selectedMode) // длина последовательности
+{
+	void selectMode(int players);
+
+	int sequenceLength;
+	char option;
+
+	cout << "Выберите длину" << endl;
+	cout << "1 Четыре" << endl;
+	cout << "2 Шесть" << endl;
+	cout << "0. Назад к выбору режима" << endl;
+
+	do
+	{
+		cin >> option;
+
+		switch (option)
+		{
+		case '1':
+			sequenceLength = 4;
+			selectedMode += "4_";
+			cout << endl << endl << " ВЫБРАНО: ДЛИНА ПОСЛЕДОВАТЕЛЬНОСТИ 4" << endl;
+			cout << " Идет загрузка ";
+			cout << " .";
+			Sleep(1000);
+
+			selectSpeed(players, mode, sequenceLength, selectedMode);
+
+			continue;
+
+		case '2':
+			sequenceLength = 6;
+			selectedMode += "6_";
+			cout << endl << endl << " ВЫБРАНО: ДЛИНА ПОСЛЕДОВАТЕЛЬНОСТИ 6" << endl;
+			cout << " Идет загрузка ";
+			cout << " .";
+			Sleep(1000);
+
+			selectSpeed(players, mode, sequenceLength, selectedMode);
+
+			continue;
+		case '0':
+			selectMode(players);
+			continue;
+		default:
+			cout << endl << " Не правильно сделан выбор. Повторите попытку..." << endl;
+			Sleep(500);
+			selectLevel(players, mode, selectedMode);
+			continue;
+		}
+	} while (option != '0');
 }
 
 void selectMode(int players) // для цифр/слов/символов
