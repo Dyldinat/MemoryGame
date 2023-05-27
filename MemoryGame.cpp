@@ -6,9 +6,135 @@
 #include <vector>
 #include <string>
 
-
 using namespace std;
 
+void recordInList(unsigned long long gameTime, string mode) // запись результата
+{
+	void menu();
+
+	string name;
+
+	int minutes = gameTime / 60;
+	int seconds = gameTime % 60;
+
+	system("cls");
+	cout << "Ваше время - " << minutes << " минут " << seconds << " секунд\n\n";
+	cout << "Введите своё имя: ";
+	cin >> name;
+
+	ofstream out;
+
+	out.open("G:/ОП/MemoryGame/Rating.txt", std::ios::binary | std::ios::app); // вписать путь до файла
+	if (out.is_open())
+	{
+		out << "\n" << name << " " << mode;
+
+		if (minutes < 10)
+			out << " 0" << minutes;
+		else
+			out << " " << minutes;
+		if (seconds < 10)
+			out << " 0" << seconds;
+		else
+			out << " " << seconds;
+	}
+	out.close();
+
+	cout << "\nВаши данные успешно записаны";
+	Sleep(500);
+
+	menu();
+}
+
+void printList() // вывод результатов
+{
+	ifstream in;
+	string word;
+	int counter = 1;
+
+	system("cls");
+
+	in.open("G:/ОП/MemoryGame/Rating.txt"); // вписать путь
+
+	if (in.is_open())
+	{
+		for (int i = 0; i < 68; i++)
+		{
+			if (i == 0)
+				cout << "+";
+			else if (i == 26)
+				cout << "+";
+			else if (i == 46)
+				cout << "+";
+
+			else if (i == 67)
+				cout << "+";
+			else
+				cout << "-";
+		}
+
+		cout << "\n|";
+		cout << setw(14) << right << "Имя" << setw(12) << "|" << setw(12) << right << "Режим" << setw(8) << "|" << setw(13) << right << "Время" << setw(8) << "|" << endl;
+
+		for (int i = 0; i < 68; i++)
+		{
+			if (i == 0)
+				cout << "+";
+			else if (i == 26)
+				cout << "+";
+			else if (i == 46)
+				cout << "+";
+
+			else if (i == 67)
+				cout << "+";
+			else
+				cout << "-";
+		}
+		cout << "\n";
+
+		while (in >> word)
+		{
+			if (counter % 10 == 1)
+			{
+				cout << "| " << setw(24) << left << word << "| ";
+			}
+			if (counter % 10 == 2)
+			{
+				cout << setw(18) << word << "| ";
+			}
+
+			if (counter % 10 == 3)
+			{
+				cout << word << " минут ";
+			}
+
+			if (counter % 10 == 4)
+			{
+				cout << word;
+				cout << " секунд |\n";
+				counter = 0;
+			}
+
+			counter++;
+		}
+
+		for (int i = 0; i < 68; i++)
+		{
+			if (i == 0)
+				cout << "+";
+			else if (i == 26)
+				cout << "+";
+			else if (i == 46)
+				cout << "+";
+
+			else if (i == 67)
+				cout << "+";
+			else
+				cout << "-";
+		}
+		cout << "\n";
+	}
+}
 
 void Play(int players, int mode, int speedLevel, int sequenceLength, string selectedMode)
 {
