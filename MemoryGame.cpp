@@ -8,23 +8,37 @@
 
 using namespace std;
 
-void recordInList(unsigned long long gameTime, string mode) // запись результата
+void printLoading()
 {
-	void menu();
+	char option;
+	system("cls");
+	cout << " Введите любой символ, чтобы начать игру" << endl << " ";
+	cin >> option;
+	cout << " Идет загрузка: ";
+	for (int i = 3; i > 0; i--)
+	{
+		Sleep(1000);
+		cout << i << " ";
+	}
+	cout << endl << " ---------   ИГРА НАЧАЛАСЬ   ---------" << endl;	Sleep(500);
+}
+
+void enterRecord(unsigned long long gameTime, string mode) // запись результата
+{
+	void openMenu();
 
 	string name;
-
 	int minutes = gameTime / 60;
 	int seconds = gameTime % 60;
 
 	system("cls");
-	cout << "Ваше время - " << minutes << " минут " << seconds << " секунд\n\n";
-	cout << "Введите своё имя: ";
+	cout << " Ваше время - " << minutes << " минут " << seconds << " секунд\n\n";
+	cout << " Введите своё имя: ";
 	cin >> name;
 
 	ofstream out;
 
-	out.open("G:/ОП/MemoryGame/Rating.txt", std::ios::binary | std::ios::app); // вписать путь до файла
+	out.open("C:/Users/Admin/Desktop/Основы программирования/Учебная практика 2023г/Rating.txt", std::ios::binary | std::ios::app); 
 	if (out.is_open())
 	{
 		out << "\n" << name << " " << mode;
@@ -43,10 +57,10 @@ void recordInList(unsigned long long gameTime, string mode) // запись ре
 	cout << "\nВаши данные успешно записаны";
 	Sleep(500);
 
-	menu();
+	openMenu();
 }
 
-void printList() // вывод результатов
+void printRecords() // вывод результатов
 {
 	ifstream in;
 	string word;
@@ -54,7 +68,7 @@ void printList() // вывод результатов
 
 	system("cls");
 
-	in.open("G:/ОП/MemoryGame/Rating.txt"); // вписать путь
+	in.open("C:/Users/Admin/Desktop/Основы программирования/Учебная практика 2023г/Rating.txt"); 
 
 	if (in.is_open())
 	{
@@ -136,11 +150,10 @@ void printList() // вывод результатов
 	}
 }
 
-void Play(int players, int mode, int speedLevel, int sequenceLength, string selectedMode)
+void startGame(int players, int mode, int speedLevel, int sequenceLength, string selectedMode)
 {
-	void menu();
-
-	const int maxSequenceLength = 6;
+	void openMenu();
+	const int maxSequenceLength = 8;
 
 	string Sequence[maxSequenceLength]; // сгенерированная последовательность
 	string answers[maxSequenceLength] = {}; // массив ответов
@@ -153,12 +166,13 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 	unsigned long long startTime;
 	vector<string> VariantsPlayChars;
 	vector<string> VariantsPlayWords;
+	vector<string> VariantsPlayNumbers;
 	boolean gameOverPlayer[2] = { false, false };
 	boolean winPlayer[2] = { false, false };
 	int playerScore[2] = { 0, 0 };
 	char option;
 
-	in.open("G:/ОП/MemoryGame/Chars.txt"); // вписать путь
+	in.open("C:/Users/Admin/Desktop/Основы программирования/Учебная практика 2023г/Chars.txt"); 
 	if (in.is_open())
 	{
 		while (in >> read)
@@ -166,12 +180,19 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 	}
 	in.close();
 
-
-	in.open("G:/ОП/MemoryGame/Words.txt"); // вписать путь
+	in.open("C:/Users/Admin/Desktop/Основы программирования/Учебная практика 2023г/Words.txt"); 
 	if (in.is_open())
 	{
 		while (in >> read)
 			VariantsPlayWords.push_back(read);
+	}
+	in.close();
+
+	in.open("C:/Users/Admin/Desktop/Основы программирования/Учебная практика 2023г/Numbers.txt");
+	if (in.is_open())
+	{
+		while (in >> read)
+			VariantsPlayNumbers.push_back(read);
 	}
 	in.close();
 
@@ -185,7 +206,11 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 		}
 		break;
 	case 2: // числа
-
+		for (int i = 0; i < maxSequenceLength; ++i)
+		{
+			int k = rand() % VariantsPlayNumbers.size();
+			Sequence[i] = VariantsPlayNumbers[k];
+		}
 		break;
 	case 3: // символы
 		for (int i = 0; i < maxSequenceLength; ++i)
@@ -218,34 +243,41 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 				for (int j = 0; j < round; j++) // внутри одного раунда
 				{
 					system("cls");
-					if (players == 2)
-						cout << "Попытка игрока " << p + 1 << endl;
+					
+					cout << " -------------------------------------" << endl;
+					cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+					cout << " -------------------------------------" << endl;
 
-					cout << "-----МЕМОРИ-----" << endl;
-					cout << "----------------" << endl;
-					cout << "Раунд " << round << endl;
-					cout << j + 1 << ": " << Sequence[j];
+					if (players == 2)
+						cout << " Попытка игрока " << p + 1 << endl;
+
+					cout << endl << " Раунд " << round << endl;
+					cout << " " << j + 1 << ": " << Sequence[j];
 
 					Sleep(speedLevel * 1000);
 				}
 
 				system("cls");
+				
+				cout << " -------------------------------------" << endl;
+				cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+				cout << " -------------------------------------" << endl;
 				if (players == 2)
-					cout << "Попытка игрока " << p + 1 << endl;
-
-				cout << "-----МЕМОРИ-----" << endl;
-				cout << "----------------" << endl;
-				cout << "Введите последовательность: " << endl;
+					cout << " Попытка игрока " << p + 1 << endl;
+				cout << endl << " Введите последовательность: " << endl;
 
 				for (int i = 0; i < round; i++) // запись ответов в массив
+				{
+					cout << " ";
 					cin >> answers[i];
+				}
 
 				for (int i = 0; i < round; i++) // проверка результатов
 				{
 					if (gameOverPlayer[p] == true)
 						break;
 
-					if (answers[i] != Sequence[i]) // при расхождении ответа с элементом последоваткльности выходим
+					if (answers[i] != Sequence[i]) // при расхождении ответа с элементом последовательности выходим
 					{
 						gameOverPlayer[p] = true;
 
@@ -257,29 +289,31 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 
 						if (players == 2)
 						{
-							cout << "Игрок " << p + 1 << " не справился" << endl;
+							cout << " Игрок " << p + 1 << " не справился" << endl << endl;
 
 							if (gameOverPlayer[0] == true && gameOverPlayer[1] == false)
 							{
-								cout << "Введите 0 для старта хода следующего игрока" << endl;
+								cout << " Введите 0 для старта хода следующего игрока" << endl << " ";
 								cin >> option;
 
 								switch (option)
 								{
 								case '0':
-									for (int i = 1; i < 4; i++)
+									cout << " Идет загрузка: ";
+									for (int i = 3; i > 0; i--)
 									{
-										cout << i;
+										cout << i << " ";
 										Sleep(1000);
 									}
-									cout << " --------------------- ИГРА НАЧАЛАСЬ --------------------- " << endl;
+									cout << endl << " ---------   ИГРА НАЧАЛАСЬ   ---------" << endl;
 									Sleep(500);
 									break;
 								}
 							}
 							else
 							{
-								cout << "Введите 0 для продолжения" << endl;
+								cout << " Введите 0 для продолжения" << endl;
+								cout << " ";
 								cin >> option;
 							}
 						}
@@ -298,25 +332,26 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 						playerScore[p] = round;
 						round = 0;
 
-						cout << "Игрок " << p + 1 << " успешло прошел раунд!" << endl;
+						cout << " Игрок " << p + 1 << " успешло прошел раунд!" << endl << endl;
 
 						if (gameOverPlayer[0] == true && gameOverPlayer[1] == false)
 						{
-							cout << "Введите 0 для старта хода следующего игрока" << endl;
+							cout << " Введите 0 для старта хода следующего игрока" << endl << " ";
 							cin >> option;
 
 							switch (option)
 							{
 							case '0':
-								for (int i = 1; i < 4; i++)
+								for (int i = 3; i > 0; i--)
 								{
-									cout << i;
+									cout << i << " ";
 									Sleep(1000);
 								}
-								cout << " --------------------- ИГРА НАЧАЛАСЬ --------------------- " << endl;
+								cout << endl << " ---------   ИГРА НАЧАЛАСЬ   ---------" << endl;
 								Sleep(500);
 								break;
 							}
+
 						}
 
 						break;
@@ -333,24 +368,64 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 						playerScore[p] = round;
 						round = 0;
 
-						cout << "Игрок " << p + 1 << " успешло прошел раунд!" << endl;
+						cout << " Игрок " << p + 1 << " успешло прошел раунд!" << endl << endl;
+
 						if (gameOverPlayer[0] == true && gameOverPlayer[1] == false)
 						{
-							cout << "Введите 0 для старта хода следующего игрока" << endl;
+							cout << " Введите 0 для старта хода следующего игрока" << endl << " ";
 							cin >> option;
 
 							switch (option)
 							{
 							case '0':
-								for (int i = 1; i < 4; i++)
+								cout << " Идет загрузка: ";
+								for (int i = 3; i > 0; i--)
 								{
-									cout << i;
+									cout << i << " ";
 									Sleep(1000);
 								}
-								cout << " --------------------- ИГРА НАЧАЛАСЬ --------------------- " << endl;
+								cout << endl << "  ---------   ИГРА НАЧАЛАСЬ   ---------" << endl;
 								Sleep(500);
 								break;
 							}
+
+						}
+
+						break;
+					}
+
+					if (sequenceLength == 8 && i == 7) // для 8
+					{
+						win = true;
+						gameOverPlayer[p] = true;
+
+						if (players == 1)
+							gameOverPlayer[1] = true;
+
+						playerScore[p] = round;
+						round = 0;
+
+						cout << " Игрок " << p + 1 << " успешло прошел раунд!" << endl << endl;
+
+						if (gameOverPlayer[0] == true && gameOverPlayer[1] == false)
+						{
+							cout << " Введите 0 для старта хода следующего игрока" << endl << " ";
+							cin >> option;
+
+							switch (option)
+							{
+							case '0':
+								cout << " Идет загрузка: ";
+								for (int i = 3; i > 0; i--)
+								{
+									cout << i << " ";
+									Sleep(1000);
+								}
+								cout << endl << "  ---------   ИГРА НАЧАЛАСЬ   ---------" << endl;
+								Sleep(500);
+								break;
+							}
+
 						}
 
 						break;
@@ -361,7 +436,7 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 					break;
 
 				if (gameOverPlayer[p] == false)
-					cout << "Правильно! Игра продолжается";
+					cout << " Правильно! Игра продолжается";
 
 				round++;
 			}
@@ -373,23 +448,26 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 		if (players == 2)
 		{
 			system("cls");
+			cout << " -------------------------------------" << endl;
+			cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+			cout << " -------------------------------------" << endl << endl;
 
-			cout << "Счет игроков: " << playerScore[0] << ":" << playerScore[1] << endl;
+			cout << " Счет игроков: " << playerScore[0] << ":" << playerScore[1] << endl;
 
 			if (playerScore[0] > playerScore[1])
-				cout << "Победил игрок 1" << endl;
+				cout << " Победил игрок 1!" << endl;
 			else if (playerScore[0] < playerScore[1])
-				cout << "Победил игрок 2" << endl;
+				cout << " Победил игрок 2!" << endl;
 			else
-				cout << "Ничья" << endl;
+				cout << " Ничья" << endl;
 
-			cout << "Введите любой символ, чтобы вернуться в главное меню" << endl;
+			cout << endl << " Введите любой символ, чтобы вернуться в главное меню" << endl << " ";
 			cin >> option;
 
 			switch (option)
 			{
 			default:
-				menu();
+				openMenu();
 				break;
 			}
 		}
@@ -400,43 +478,43 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 				unsigned long long gameTime = (__rdtsc() - startTime) / 2160000000;
 
 				system("cls");
-				cout << "-----МЕМОРИ-----" << endl;
-				cout << "----------------" << endl;
-				cout << "Правильно! Вы выиграли!" << endl;
-				cout << "Ваша последовательность:" << endl;
-				for (int i = 0; i < maxSequenceLength; i++)
+				cout << " -------------------------------------" << endl;
+				cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+				cout << " -------------------------------------" << endl << endl;
+				cout << " Правильно! Вы выиграли!" << endl << endl;
+				cout << " Ваша последовательность:" << endl << " ";
+				for (int i = 0; i < sequenceLength; i++)
 					cout << Sequence[i] << " ";
-				cout << endl << "Время вашей игры: " << gameTime << " секунд" << endl;
-				cout << "\nЖелаете сохранить свой результат?\n";
-				cout << "\n1. Сохранить результат";
-				cout << "\n0. Выход в главное меню\n";
-
+				cout << endl << endl << " Время вашей игры: " << gameTime << " секунд" << endl << endl;
+				cout << " Желаете сохранить свой результат?" << endl;
+				cout << " 1. Сохранить результат" << endl;
+				cout << " 0. Выход в главное меню" << endl << " ";
 				cin >> option;
 
 				switch (option)
 				{
 				case '1':
-					recordInList(gameTime, selectedMode);
+					enterRecord(gameTime, selectedMode);
 					break;
 
 				case '0':
-					menu();
+					openMenu();
 					break;
 				}
 			}
 			else
 			{
-				cout << "Вы проиграли" << endl;
-				cout << "Введите любой символ, чтобы вернуться в главное меню" << endl;
+				cout << " Вы проиграли!" << endl << endl;
+				cout << " Введите любой символ, чтобы вернуться в главное меню" << endl << " ";
 				cin >> option;
 
 				switch (option)
 				{
 				case '0':
-					menu();
+					openMenu();
 					break;
 				default:
-					menu();
+					openMenu();
 					break;
 				}
 			}
@@ -444,61 +522,50 @@ void Play(int players, int mode, int speedLevel, int sequenceLength, string sele
 	}
 }
 
-void selectSpeed(int players, int mode, int sequenceLength, string selectedMode)
+void selectSpeed(int players, int mode, int sequenceLength, string selectedMode) //скорость
 {
 	void selectLevel(int players, int mode, string selectedMode);
-
 	char speedLevel;
-	char option;
-
+	
 	system("cls");
-	cout << "Выберите временной уровень сложности: " << endl;
-	cout << "1. Лёгкий" << endl;
-	cout << "2. Средний" << endl;
-	cout << "3. Сложный" << endl;
-	cout << "0. Назад к выбору длины" << endl;
+	cout << " -------------------------------------" << endl;
+	cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+	cout << " -------------------------------------" << endl << endl;
 
+	cout << " Выберите временной уровень сложности: " << endl;
+	cout << " 1. Лёгкий" << endl;
+	cout << " 2. Средний" << endl;
+	cout << " 3. Сложный" << endl << endl;
+	cout << " 0. Назад к выбору длины" << endl << endl;
+
+	cout << " ";
 	cin >> speedLevel;
-
-	system("cls");
-	cout << "Введите 0 для начала игры" << endl;
-	cin >> option;
-
-	switch (option)
-	{
-	case '0':
-		cout << "3" << endl;
-		Sleep(1000);
-		cout << "2" << endl;
-		Sleep(1000);
-		cout << "1" << endl;
-		Sleep(1000);
-		break;
-	}
-
-	cout << " --------------------- ИГРА НАЧАЛАСЬ --------------------- " << endl;
-	Sleep(500);
-
 
 	switch (speedLevel)
 	{
 	case '1':
-		cout << "Выбран уровень сложности: Лёгкий " << endl;
+		cout << " Выбран уровень сложности: Лёгкий " << endl;
+		Sleep(1500);
 		speedLevel = 3;
 		selectedMode += "Easy";
-		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		printLoading();
+		startGame(players, mode, speedLevel, sequenceLength, selectedMode);
 		break;
 	case '2':
-		cout << "Выбран уровень сложности: Средний" << endl;
+		cout << " Выбран уровень сложности: Средний" << endl;
+		Sleep(1500);
 		speedLevel = 2;
 		selectedMode += "Normal";
-		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		printLoading();
+		startGame(players, mode, speedLevel, sequenceLength, selectedMode);
 		break;
 	case '3':
-		cout << "Выбран уровень сложности: Сложный" << endl;
+		cout << " Выбран уровень сложности: Сложный" << endl;
+		Sleep(1500);
 		speedLevel = 1;
 		selectedMode += "Hard";
-		Play(players, mode, speedLevel, sequenceLength, selectedMode);
+		printLoading();
+		startGame(players, mode, speedLevel, sequenceLength, selectedMode);
 		break;
 	case '0':
 		selectLevel(players, mode, selectedMode);
@@ -516,13 +583,20 @@ void selectLevel(int players, int mode, string selectedMode) // длина по�
 	int sequenceLength;
 	char option;
 
-	cout << "Выберите длину" << endl;
-	cout << "1 Четыре" << endl;
-	cout << "2 Шесть" << endl;
-	cout << "0. Назад к выбору режима" << endl;
+	system("cls");
+	cout << " -------------------------------------" << endl;
+	cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+	cout << " -------------------------------------" << endl << endl;
+
+	cout << " Выберите длину последовательности" << endl;
+	cout << " 1. Четыре" << endl;
+	cout << " 2. Шесть" << endl;
+	cout << " 3. Восемь" << endl << endl;
+	cout << " 0. Назад к выбору режима" << endl << endl;
 
 	do
 	{
+		cout << " ";
 		cin >> option;
 
 		switch (option)
@@ -530,10 +604,8 @@ void selectLevel(int players, int mode, string selectedMode) // длина по�
 		case '1':
 			sequenceLength = 4;
 			selectedMode += "4_";
-			cout << endl << endl << " ВЫБРАНО: ДЛИНА ПОСЛЕДОВАТЕЛЬНОСТИ 4" << endl;
-			cout << " Идет загрузка ";
-			cout << " .";
-			Sleep(1000);
+			cout << " Выбрана длина последовательности: Четыре" << endl;
+			Sleep(1500);
 
 			selectSpeed(players, mode, sequenceLength, selectedMode);
 
@@ -542,10 +614,18 @@ void selectLevel(int players, int mode, string selectedMode) // длина по�
 		case '2':
 			sequenceLength = 6;
 			selectedMode += "6_";
-			cout << endl << endl << " ВЫБРАНО: ДЛИНА ПОСЛЕДОВАТЕЛЬНОСТИ 6" << endl;
-			cout << " Идет загрузка ";
-			cout << " .";
-			Sleep(1000);
+			cout << " Выбрана длина последовательности: Шесть" << endl;
+			Sleep(1500);
+
+			selectSpeed(players, mode, sequenceLength, selectedMode);
+
+			continue;
+
+		case '3':
+			sequenceLength = 8;
+			selectedMode += "8_";
+			cout << " Выбрана длина последовательности: Восемь" << endl;
+			Sleep(1500);
 
 			selectSpeed(players, mode, sequenceLength, selectedMode);
 
@@ -554,7 +634,7 @@ void selectLevel(int players, int mode, string selectedMode) // длина по�
 			selectMode(players);
 			continue;
 		default:
-			cout << endl << " Не правильно сделан выбор. Повторите попытку..." << endl;
+			cout << " Не правильно сделан выбор. Повторите попытку..." << endl;
 			Sleep(500);
 			selectLevel(players, mode, selectedMode);
 			continue;
@@ -562,23 +642,28 @@ void selectLevel(int players, int mode, string selectedMode) // длина по�
 	} while (option != '0');
 }
 
-void selectMode(int players) // для цифр/слов/символов
+void selectMode(int players) // для чисел/слов/символов
 {
-	void menu();
+	void openMenu();
 
 	char option;
 	int mode;
 	string selectedMode;
 
 	system("cls");
-	cout << "Выберите режим" << endl;
-	cout << "1. Слова" << endl;
-	cout << "2. Числа" << endl;
-	cout << "3. Символы" << endl;
-	cout << "0. Вернуться в меню" << endl;
+	cout << " -------------------------------------" << endl;
+	cout << " ----------   ИГРА МЕМОРИ   ----------" << endl;
+	cout << " -------------------------------------" << endl << endl;
+
+	cout << " Выберите режим" << endl;
+	cout << " 1. Слова" << endl;
+	cout << " 2. Числа" << endl;
+	cout << " 3. Символы" << endl << endl;
+	cout << " 0. Вернуться в меню" << endl << endl;
 
 	do
 	{
+		cout << " ";
 		cin >> option;
 
 		switch (option)
@@ -586,20 +671,26 @@ void selectMode(int players) // для цифр/слов/символов
 		case '1':
 			mode = 1;
 			selectedMode = "Strings_";
+			cout << " Выбран режим: Слова";
+			Sleep(1500);
 			selectLevel(players, mode, selectedMode);
 			continue;
 		case '2':
 			mode = 2;
 			selectedMode = "Numbers_";
+			cout << " Выбран режим: Числа";
+			Sleep(1500);
 			selectLevel(players, mode, selectedMode);
 			continue;
 		case '3':
 			mode = 3;
 			selectedMode = "Chars_";
+			cout << " Выбран режим: Символы";
+			Sleep(1500);
 			selectLevel(players, mode, selectedMode);
 			continue;
 		case '0':
-			menu();
+			openMenu();
 			continue;
 		default:
 			selectMode(players);
@@ -609,7 +700,7 @@ void selectMode(int players) // для цифр/слов/символов
 	} while (option != '0');
 }
 
-void menu()
+void openMenu()
 {
 	system("cls");
 	cout << " ---------------------------------------------------------" << endl;
@@ -620,15 +711,15 @@ void menu()
 	cout << " ---------------      ПРАВИЛА ИГРЫ     -------------------" << endl;
 	cout << " ---------------------------------------------------------" << endl;
 	cout << "    Мемори – игра на развитие памяти" << endl;
-	cout << "1.На экране появится картинка, нужно её запомнить." << endl;
-	cout << "2.Введите номер соответствующей картинки." << endl;
-	cout << "3.Если номер был выбран верно, то на экране после показа " << endl;
-	cout << "  первой картинки появится вторая." << endl;
-	cout << "  Запомни их и последовательно впиши номера этих картинок." << endl;
-	cout << "  Если и на этот раз номера картинок были выбраны верно, " << endl;
-	cout << "  то игра продолжается." << endl;
-	cout << "4.Если номер картинки(картинок) был указан неверно, " << endl;
-	cout << "  то игра окончена." << endl;
+	cout << " 1.На экране появится картинка, нужно её запомнить." << endl;
+	cout << " 2.Введите номер соответствующей картинки." << endl;
+	cout << " 3.Если номер был выбран верно, то на экране после показа " << endl;
+	cout << "   первой картинки появится вторая." << endl;
+	cout << "   Запомни их и последовательно впиши номера этих картинок." << endl;
+	cout << "   Если и на этот раз номера картинок были выбраны верно, " << endl;
+	cout << "   то игра продолжается." << endl;
+	cout << " 4.Если номер картинки(картинок) был указан неверно, " << endl;
+	cout << "   то игра окончена." << endl;
 	cout << " ---------------------------------------------------------" << endl;
 	cout << " ---------------       МЕНЮ ИГРЫ       -------------------" << endl << endl;
 	cout << " ---- НАЧАТЬ ИГРУ ОДНОМУ               - НАЖМИТЕ [1]    " << endl;
@@ -643,6 +734,7 @@ void menu()
 
 	do
 	{
+		cout << " ";
 		cin >> option;
 
 		switch (option)
@@ -654,17 +746,16 @@ void menu()
 			selectMode(2);
 			break;
 		case '3':
-			printList();
+			printRecords();
 
-			cout << "\nВведите 0, чтобы вернуться в главное меню\n";
+			cout << " Введите любой символ, чтобы вернуться в главное меню" << endl << " ";
 			cin >> back;
-
-			if (back == '0')
-				break;
+			openMenu();
+			break;
 		case '0':
 			break;
 		default:
-			menu();
+			openMenu();
 			break;
 		}
 
@@ -678,7 +769,7 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	srand(time(NULL));
 
-	menu();
+	openMenu();
 
 	return 0;
 }
